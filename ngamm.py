@@ -66,3 +66,5 @@ for img_link in set(img_list):
     img_stream = requests.get(img_link)
     img.write(img_stream.content)
     img.close()
+
+#TODO: 1、多线程 2、图片名字对应楼层 3、模块化
