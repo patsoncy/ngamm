@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# -*- coding: gbk -*-
 
 __author__ = 'Administrator'
 
 import time
 import re
 import requests
-import sys
+import sys,os
 
 url = 'http://bbs.nga.cn/read.php?tid=8369832&_ff=-7'
 img_prefix = 'http://img.nga.cn/attachments'
@@ -43,7 +43,14 @@ all_img_list = re.findall(img_re, content)
 img_list = [img_prefix + s[1:] if (s.find('.thumb') == -1) else img_prefix + s[1:s.find('.thumb')] for s in
             all_img_list]
 
-file_path = sys.path[0]
-# img = open(file_path + '\\daxuanwo.html', 'wb')
+file_path = sys.path[0] + '\\' + dir_name[0]
+
+if not os.path.exists(file_path):
+    os.mkdir(file_path)
+
 for img_link in img_list:
-    print img_link
+    print file_path + '\\%s.jpg' % img_link[-15:-5]
+    img = open(file_path + '\\%s.jpg' % img_link[-5:-20], 'wb')
+    img_stream = requests.get(img_link)
+    img.write(img_stream.content)
+    img.close()
