@@ -11,11 +11,8 @@ import os
 import nga_headers_cookies
 import setting
 
+# TODO: 1、多线程 2、图片名字对应楼层 3、模块化
 # url_prefix = 'http://bbs.nga.cn/read.php?tid=8344065&page='
-url_prefix = 'http://bbs.nga.cn/read.php?tid=8369832&_ff=-7&rand=498'
-img_prefix = 'http://img.nga.cn/attachments'
-
-total_pages = 42
 
 web = requests.get(url_prefix + '4', headers=nga_headers_cookies.headers, cookies=nga_headers_cookies.cookies())
 pat = re.compile(setting.post_page_num)
@@ -61,4 +58,4 @@ print name
 #     img.write(img_stream.content)
 #     img.close()
 
-# TODO: 1、多线程 2、图片名字对应楼层 3、模块化
+

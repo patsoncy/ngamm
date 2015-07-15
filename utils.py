@@ -12,7 +12,7 @@ def get_urls_from_properties(properties_name):
         raise IOError
     else:
         properties = open(properties_name, 'r')
-        properties.readline()
+        properties.readlines()
 
 
 def make_url_with_page_num(url, page_no=1):
