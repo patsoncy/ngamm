@@ -10,9 +10,17 @@ import sys
 import os
 import nga_headers_cookies
 import setting
-
+import utils
 # TODO: 1、多线程 2、图片名字对应楼层 3、模块化
 # url_prefix = 'http://bbs.nga.cn/read.php?tid=8344065&page='
+
+def main():
+    try
+        urls = utils.get_urls_from_properties(setting.properties_name)
+    except IOError:
+        print '配置文件不存在'
+
+
 
 web = requests.get(url_prefix + '4', headers=nga_headers_cookies.headers, cookies=nga_headers_cookies.cookies())
 pat = re.compile(setting.post_page_num)

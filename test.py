@@ -6,8 +6,8 @@ import re
 import unittest
 
 s = [(1111, 23), (1111, 24), (1111, 23), (23, 1111)]
-file = open('post_urls.properties', 'r')
-print file.readlines()
+file = []
+print 1 if file else 2
 
 class MyTest(unittest.TestCase):
     pass
