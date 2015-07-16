@@ -10,8 +10,11 @@ import urllib
 import nga_headers_cookies
 import setting
 import utils
+import time
+from utils import print_log
 
-# TODO: 1、多线程 2、图片名字对应楼层 3、模块化
+
+# TODO: 1、多进程 2、日志装饰器 
 
 def main():
     try:
@@ -27,18 +30,15 @@ def let_us_go(urls):
         try:
             # 获得帖子源码
             post_content = get_url_content(url)
-            print post_content
             if not post_content:
                 raise IOError('%s 内容获取失败，检查请求状态' % url)
                 break
             # 获得帖子标题
             post_image_dir_name = dry_nga_title(get_post_title(post_content))
             print 'post title : %s' % post_image_dir_name
-            if post_image_dir_name == '提示信息':
-                print 'cookie已过期 请检查'
-                break
             # 获得帖子页数
-            post_pages = get_post_total_pages(post_content)
+            # post_pages = get_post_total_pages(post_content)
+            post_pages = 1
             print 'post pages : %s' % post_pages
             # 生成帖子图片文件夹
             img_path = make_post_image_dir(post_image_dir_name)
@@ -58,7 +58,6 @@ def get_url_content(url):
     response = requests.get(url, headers=nga_headers_cookies.headers, cookies=nga_headers_cookies.cookies())
     if response.status_code != 200:
         print 'Request (%s)\'s false,status_code = %s' % (url, response.status_code)
-        print response.content
         return ''
     else:
         return response.content
@@ -82,6 +81,7 @@ def get_post_total_pages(content):
 
 
 def fetch_post_image_links(url, post_pages):
+    print_log('开始收集帖子全部图片链接')
     post_content_reg = re.compile(setting.post_content_pattern, re.S)
     link_reg = re.compile(setting.img_link_pattern)
     link_reg2 = re.compile(setting.img_link_with_third_site_pattern)
@@ -89,13 +89,17 @@ def fetch_post_image_links(url, post_pages):
     for page in range(1, post_pages + 1):
         print 'cur page:%s' % page
         curl_page_url = utils.make_url_with_page_num(url, page)
-        content = (re.findall(post_content_reg, get_url_content(curl_page_url)))[0]
-        origin_img_links = re.findall(link_reg, content) + re.findall(link_reg2, content)
-        img_links += [utils.make_real_img_link(link) for link in origin_img_links]
+        whole_content = get_url_content(curl_page_url)
+        if whole_content:
+            content = (re.findall(post_content_reg, whole_content))[0]
+            origin_img_links = re.findall(link_reg, content) + re.findall(link_reg2, content)
+            img_links += [utils.make_real_img_link(link) for link in origin_img_links]
+    print_log('收集链接完毕')
     return sorted(utils.clean_str_list(img_links))
 
 
 def remove_repeat_img_links(img_path, post_image_dir_name, img_links):
+    print_log('删除重复链接')
     record_file_path = img_path + post_image_dir_name + '.txt'
     print 'Post download record file: %s' % record_file_path
     if os.path.exists(record_file_path):
@@ -130,11 +134,13 @@ def make_post_image_dir(post_image_dir_name):
         os.mkdir(real_dir)
     return real_dir + '\\'
 
-
 def download_images_from_link_list(img_links, img_path):
+    print_log('遍历下载图片')
+    start_time = time.time()
     for index, link in enumerate(img_links):
         urllib.urlretrieve(link, filename=img_path + '\\' + utils.clean_filename(link[link.rfind('/') + 1:]))
-
+    end_time = time.time()
+    print_log('遍历下载图片共花费 : %s 秒 '% str(end_time - start_time))
 
 if __name__ == '__main__':
     main()

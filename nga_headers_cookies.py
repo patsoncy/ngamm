@@ -27,5 +27,5 @@ def cookies():
         'CNZZDATA30043604': 'cnzz_eid%3D710699211-1436884139-%26ntime%3D1436884139',
         'guestJs': now,
         'lastvisit': now,
-        'ngaPassportUid': 'guest055a52d5013d0a'
+        'ngaPassportUid': 'guest055a7ba0238964'
     }
