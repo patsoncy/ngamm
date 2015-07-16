@@ -10,3 +10,5 @@
 
 ### version 0.1.0
 
+专业python爬虫库有`beautiful_soup` 和 `scrapy`
+
