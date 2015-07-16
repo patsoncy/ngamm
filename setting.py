@@ -5,13 +5,13 @@ __author__ = 'patson'
 import sys
 
 # 工程路径
-project_path = sys.path[0]
+project_path = sys.path[0] + '\\'
 
 # 配置文件名称
 properties_name = 'post_urls.properties'
 
 # 帖子图片存储父路径
-post_images_pardir = 'image\\'
+post_images_pardir = 'pictures\\'
 
 # 在帖子URL中添加页码
 url_suffix = '&page='
@@ -30,3 +30,4 @@ post_title_pattern = r'<title>(.*?)</title>'
 
 # 获取帖子总页数正则
 post_page_num_pattern = r',1:([0-9]*?),'
+
