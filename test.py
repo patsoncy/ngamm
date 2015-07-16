@@ -4,10 +4,11 @@
 __author__ = 'Administrator'
 import re, urllib, setting
 import unittest
-import utils,os
-s= 'http://img.nga.cn/attachments/mon_201507/13/-7_55a368da7d374.jpg'
+import utils, os
+
+s = 'aaa*aa<aa?aa>aa"aa|aaaa/aa\\aa:aaaa'
 # fi = open(s,'r')
-print s[s.rfind('/')+1:]
+print re.sub(r'>|<|:|/|\||\\|\?|\*|"', r'-', s)
 
 # urllib.urlretrieve('http://img.nga.cn/attachments/mon_201507/14/-7_55a51d9e8dcd6.jpg','1.jpg')
 

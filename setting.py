@@ -21,6 +21,8 @@ img_link_prefix = 'http://img.nga.cn/attachments'
 
 # 获取图片相对地址的正则
 img_link_pattern = r',url:\'(.*?)\',name:'
+# 获取第三方图片地址的正则
+img_link_with_third_site_pattern = r'\[img\](.*?)\[/img\]'
 
 # 获取图片地址和名称的正则
 img_link_and_name_pattern = r',url:\'(.*?)\',name:\'(.*?)\''

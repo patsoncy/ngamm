@@ -5,6 +5,7 @@ __author__ = 'patson'
 
 import setting
 import os
+import re
 
 
 def get_urls_from_properties(properties_name):
@@ -33,4 +34,14 @@ def make_url_with_page_num(url, page_no=1):
 
 
 def make_real_img_link(img_link):
-    return setting.img_link_prefix + img_link if img_link.find('http') == -1 else img_link
+    if img_link.find('http') == -1:
+        link_prefix = setting.img_link_prefix + '/'
+        img_link = img_link[2:] if img_link.startswith('./') else img_link
+        return link_prefix + img_link if (img_link.find('.thumb') == -1) \
+            else link_prefix + img_link[:img_link.find('.thumb')]
+    else:
+        return img_link
+
+# 去除Windows系统下文件夹名称的特殊字符,使用 - 代替
+def clean_filename(file_name):
+    return re.sub(r'>|<|:|/|\||\\|\?|\*|"', r'-', file_name)

@@ -19,32 +19,35 @@ def main():
     except IOError:
         print '配置文件不存在或没有待请求的地址'
     else:
-        for url in urls:
-            try:
-                # 获得帖子源码
-                post_content = get_url_content(url)
-                # 获得帖子标题
-                post_image_dir_name = dry_nga_title(get_post_title(post_content))
-                print 'post title : %s' % post_image_dir_name
-                if post_image_dir_name == '提示信息':
-                    print 'cookie已过期 请检查'
-                    break
-                # 获得帖子页数
-                post_pages = get_post_total_pages(post_content)
-                print 'post pages : %s' % post_pages
-                # 生成帖子图片文件夹
-                img_path = make_post_image_dir(post_image_dir_name)
-                print 'post image dir : %s' % img_path
-                # 获得帖子所有图片http路径
-                img_links = fetch_post_image_links(url, post_pages)
-                # print 'post img links ; %s' % ','.join(img_links)
-                # 删除已经下载过的图片链接
-                new_img_links = remove_repeat_img_links(img_path, post_image_dir_name, img_links)
-                print 'Total download link: %s' % len(new_img_links)
-                # 下载图片
-                download_images_from_link_list(new_img_links, img_path)
-            except Exception, e:
-                print e
+        let_us_go(urls)
+
+
+def let_us_go(urls):
+    for url in urls:
+        try:
+            # 获得帖子源码
+            post_content = get_url_content(url)
+            # 获得帖子标题
+            post_image_dir_name = dry_nga_title(get_post_title(post_content))
+            print 'post title : %s' % post_image_dir_name
+            if post_image_dir_name == '提示信息':
+                print 'cookie已过期 请检查'
+                break
+            # 获得帖子页数
+            post_pages = get_post_total_pages(post_content)
+            print 'post pages : %s' % post_pages
+            # 生成帖子图片文件夹
+            img_path = make_post_image_dir(post_image_dir_name)
+            print 'post image dir : %s' % img_path
+            # 获得帖子所有图片http路径
+            img_links = fetch_post_image_links(url, post_pages)
+            # 删除已经下载过的图片链接
+            new_img_links = remove_repeat_img_links(img_path, post_image_dir_name, img_links)
+            print 'Total download link: %s' % len(new_img_links)
+            # 下载图片
+            download_images_from_link_list(new_img_links, img_path)
+        except Exception, e:
+            print e
 
 
 def get_url_content(url):
@@ -75,14 +78,13 @@ def get_post_total_pages(content):
 
 def fetch_post_image_links(url, post_pages):
     reg = re.compile(setting.img_link_pattern)
+    reg2 = re.compile(setting.img_link_with_third_site_pattern)
     img_links = []
     for page in range(1, post_pages + 1):
         curl_page_url = utils.make_url_with_page_num(url, page)
         content = get_url_content(curl_page_url)
-        origin_img_links = re.findall(reg, content)
-        link_prefix = setting.img_link_prefix + '/'
-        img_links += [link_prefix + link if (link.find('.thumb') == -1) else link_prefix + link[:link.find('.thumb')]
-                      for link in origin_img_links]
+        origin_img_links = re.findall(reg, content) + re.findall(reg2, content)
+        img_links += [utils.make_real_img_link(link) for link in origin_img_links]
     return sorted(utils.clean_str_list(img_links))
 
 
@@ -95,9 +97,6 @@ def remove_repeat_img_links(img_path, post_image_dir_name, img_links):
         existed_links = utils.clean_str_list(download_records_file.readlines())
         # 新增链接（所有链接减去已下载链接）
         new_links = sorted(list(set(img_links) - set(existed_links)))
-        print img_links
-        print existed_links
-        print new_links
         # 将新增连接追加写入至记录文件
         download_records_file.writelines([link + '\n' for link in new_links])
         download_records_file.close()
@@ -127,7 +126,7 @@ def make_post_image_dir(post_image_dir_name):
 
 def download_images_from_link_list(img_links, img_path):
     for index, link in enumerate(img_links):
-        urllib.urlretrieve(link, filename=img_path + '\\' + link[link.rfind('/') + 1:])
+        urllib.urlretrieve(link, filename=img_path + '\\' + utils.clean_filename(link[link.rfind('/') + 1:]))
 
 
 if __name__ == '__main__':
