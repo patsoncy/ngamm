@@ -77,13 +77,15 @@ def get_post_total_pages(content):
 
 
 def fetch_post_image_links(url, post_pages):
-    reg = re.compile(setting.img_link_pattern)
-    reg2 = re.compile(setting.img_link_with_third_site_pattern)
+    post_content_reg = re.compile(setting.post_content_pattern, re.S)
+    link_reg = re.compile(setting.img_link_pattern)
+    link_reg2 = re.compile(setting.img_link_with_third_site_pattern)
     img_links = []
     for page in range(1, post_pages + 1):
+        print 'cur page:%s' % page
         curl_page_url = utils.make_url_with_page_num(url, page)
-        content = get_url_content(curl_page_url)
-        origin_img_links = re.findall(reg, content) + re.findall(reg2, content)
+        content = (re.findall(post_content_reg, get_url_content(curl_page_url)))[0]
+        origin_img_links = re.findall(link_reg, content) + re.findall(link_reg2, content)
         img_links += [utils.make_real_img_link(link) for link in origin_img_links]
     return sorted(utils.clean_str_list(img_links))
 
