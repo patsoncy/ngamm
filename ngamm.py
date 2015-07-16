@@ -27,6 +27,10 @@ def let_us_go(urls):
         try:
             # 获得帖子源码
             post_content = get_url_content(url)
+            print post_content
+            if not post_content:
+                raise IOError('%s 内容获取失败，检查请求状态' % url)
+                break
             # 获得帖子标题
             post_image_dir_name = dry_nga_title(get_post_title(post_content))
             print 'post title : %s' % post_image_dir_name
@@ -46,14 +50,15 @@ def let_us_go(urls):
             print 'Total download link: %s' % len(new_img_links)
             # 下载图片
             download_images_from_link_list(new_img_links, img_path)
-        except Exception, e:
+        except IOError, e:
             print e
 
 
 def get_url_content(url):
     response = requests.get(url, headers=nga_headers_cookies.headers, cookies=nga_headers_cookies.cookies())
     if response.status_code != 200:
-        print 'Get (%s)\'s content false,status_code = %s' % url, response.status_code
+        print 'Request (%s)\'s false,status_code = %s' % (url, response.status_code)
+        print response.content
         return ''
     else:
         return response.content
