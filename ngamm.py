@@ -37,8 +37,7 @@ def let_us_go(urls):
             post_image_dir_name = dry_nga_title(get_post_title(post_content))
             print 'post title : %s' % post_image_dir_name
             # 获得帖子页数
-            # post_pages = get_post_total_pages(post_content)
-            post_pages = 1
+            post_pages = get_post_total_pages(post_content)
             print 'post pages : %s' % post_pages
             # 生成帖子图片文件夹
             img_path = make_post_image_dir(post_image_dir_name)
@@ -134,13 +133,15 @@ def make_post_image_dir(post_image_dir_name):
         os.mkdir(real_dir)
     return real_dir + '\\'
 
+
 def download_images_from_link_list(img_links, img_path):
     print_log('遍历下载图片')
     start_time = time.time()
     for index, link in enumerate(img_links):
         urllib.urlretrieve(link, filename=img_path + '\\' + utils.clean_filename(link[link.rfind('/') + 1:]))
     end_time = time.time()
-    print_log('遍历下载图片共花费 : %s 秒 '% str(end_time - start_time))
+    print_log('遍历下载图片共花费 : %s 秒 ' % str(round(end_time - start_time, 2)))
+
 
 if __name__ == '__main__':
     main()
