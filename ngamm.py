@@ -22,35 +22,35 @@ def main():
     except IOError:
         print '配置文件不存在或没有待请求的地址'
     else:
-        let_us_go(urls)
+        for url in urls:
+            let_us_go(url)
 
 
-def let_us_go(urls):
-    for url in urls:
-        try:
-            # 获得帖子源码
-            post_content = get_url_content(url)
-            if not post_content:
-                raise IOError('%s 内容获取失败，检查请求状态' % url)
-                break
-            # 获得帖子标题
-            post_image_dir_name = dry_nga_title(get_post_title(post_content))
-            print 'post title : %s' % post_image_dir_name
-            # 获得帖子页数
-            post_pages = get_post_total_pages(post_content)
-            print 'post pages : %s' % post_pages
-            # 生成帖子图片文件夹
-            img_path = make_post_image_dir(post_image_dir_name)
-            print 'post image dir : %s' % img_path
-            # 获得帖子所有图片http路径
-            img_links = fetch_post_image_links(url, post_pages)
-            # 删除已经下载过的图片链接
-            new_img_links = remove_repeat_img_links(img_path, post_image_dir_name, img_links)
-            print 'Total download link: %s' % len(new_img_links)
-            # 下载图片
-            download_images_from_link_list(new_img_links, img_path)
-        except IOError, e:
-            print e
+def let_us_go(url):
+    try:
+        # 获得帖子源码
+        post_content = get_url_content(url)
+        if not post_content:
+            raise IOError('%s 内容获取失败，检查请求状态' % url)
+            break
+        # 获得帖子标题
+        post_image_dir_name = dry_nga_title(get_post_title(post_content))
+        print 'post title : %s' % post_image_dir_name
+        # 获得帖子页数
+        post_pages = get_post_total_pages(post_content)
+        print 'post pages : %s' % post_pages
+        # 生成帖子图片文件夹
+        img_path = make_post_image_dir(post_image_dir_name)
+        print 'post image dir : %s' % img_path
+        # 获得帖子所有图片http路径
+        img_links = fetch_post_image_links(url, post_pages)
+        # 删除已经下载过的图片链接
+        new_img_links = remove_repeat_img_links(img_path, post_image_dir_name, img_links)
+        print 'Total download link: %s' % len(new_img_links)
+        # 下载图片
+        download_images_from_link_list(new_img_links, img_path)
+    except IOError, e:
+        print e
 
 
 def get_url_content(url):
