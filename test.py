@@ -2,11 +2,10 @@
 # -*- coding: gbk -*-
 
 __author__ = 'Administrator'
-import re, urllib, setting
-import unittest
-import utils, os, ngamm,time
 
-print time.time()
+import  multiprocessing
+
+print multiprocessing.cpu_count()
 
 
 # class MyTest(unittest.TestCase):

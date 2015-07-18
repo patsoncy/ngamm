@@ -23,8 +23,11 @@ def main():
         print '配置文件不存在或没有待请求的地址'
     else:
         for url in urls:
-            let_us_go(url)
-
+            try:
+                let_us_go(url)
+            except IOError,e:
+                print e
+                break
 
 def let_us_go(url):
     try:
@@ -32,7 +35,6 @@ def let_us_go(url):
         post_content = get_url_content(url)
         if not post_content:
             raise IOError('%s 内容获取失败，检查请求状态' % url)
-            break
         # 获得帖子标题
         post_image_dir_name = dry_nga_title(get_post_title(post_content))
         print 'post title : %s' % post_image_dir_name
