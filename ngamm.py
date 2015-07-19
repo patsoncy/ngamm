@@ -19,6 +19,7 @@ from utils import print_log
 def main():
     try:
         urls = utils.get_urls_from_properties(setting.properties_name)
+        print urls
     except IOError:
         print '配置文件不存在或没有待请求的地址'
     else:
@@ -47,7 +48,9 @@ def let_us_go(url):
         # 获得帖子所有图片http路径
         img_links = fetch_post_image_links(url, post_pages)
         # 删除已经下载过的图片链接
+        print_log('开始删除重复链接')
         new_img_links = remove_repeat_img_links(img_path, post_image_dir_name, img_links)
+        print_log('删除重复链接完毕')
         print 'Total download link: %s' % len(new_img_links)
         # 下载图片
         download_images_from_link_list(new_img_links, img_path)
@@ -100,7 +103,6 @@ def fetch_post_image_links(url, post_pages):
 
 
 def remove_repeat_img_links(img_path, post_image_dir_name, img_links):
-    print_log('删除重复链接')
     record_file_path = img_path + post_image_dir_name + '.txt'
     print 'Post download record file: %s' % record_file_path
     if os.path.exists(record_file_path):
