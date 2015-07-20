@@ -26,9 +26,10 @@ def main():
         for url in urls:
             try:
                 let_us_go(url)
-            except IOError,e:
+            except IOError, e:
                 print e
                 break
+
 
 def let_us_go(url):
     try:
@@ -91,7 +92,7 @@ def fetch_post_image_links(url, post_pages):
     link_reg2 = re.compile(setting.img_link_with_third_site_pattern)
     img_links = []
     for page in range(1, post_pages + 1):
-        print 'cur page:%s' % page
+        print 'cur page:%s\r' % page,
         curl_page_url = utils.make_url_with_page_num(url, page)
         whole_content = get_url_content(curl_page_url)
         if whole_content:
@@ -139,12 +140,27 @@ def make_post_image_dir(post_image_dir_name):
 
 
 def download_images_from_link_list(img_links, img_path):
-    print_log('遍历下载图片')
+    print_log('遍历下载图片中')
     start_time = time.time()
+    total = len(img_links)
     for index, link in enumerate(img_links):
-        urllib.urlretrieve(link, filename=img_path + '\\' + utils.clean_filename(link[link.rfind('/') + 1:]))
+        print_log('第 %s / %s 张' % (str(index + 1), total))
+        urllib.urlretrieve(link, filename=img_path + '\\' + utils.clean_filename(link[link.rfind('/') + 1:]),
+                           reporthook=schedule)
     end_time = time.time()
     print_log('遍历下载图片共花费 : %s 秒 ' % str(round(end_time - start_time, 2)))
+
+
+def schedule(a, b, c):
+    """下载进度
+    a:已经下载的数据块
+    b:数据块的大小
+    c:远程文件的大小
+    """
+    per = 100.0 * a * b / c
+    if per > 100:
+        per = 100
+    print '%.2f%%\r' % per,
 
 
 if __name__ == '__main__':

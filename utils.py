@@ -42,9 +42,11 @@ def make_real_img_link(img_link):
     else:
         return img_link
 
+
 # 去除Windows系统下文件夹名称的特殊字符,使用 - 代替
 def clean_filename(file_name):
     return re.sub(r'>|<|:|/|\||\\|\?|\*|"', r'-', file_name)
 
+
 def print_log(words):
-    print '-'*10,words,'-'*10
+    print '-' * 10, words, '-' * 10
