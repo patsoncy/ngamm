@@ -8,11 +8,11 @@ import os
 import re
 
 
-def get_urls_from_properties(properties_name):
-    if not os.path.exists(properties_name):
+def get_urls_from_txt_file(file_name):
+    if not os.path.exists(file_name):
         raise IOError
     else:
-        properties = open(properties_name, 'r')
+        properties = open(file_name, 'r')
         urls = properties.readlines()
         properties.close()
         if not urls:

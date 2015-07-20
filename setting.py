@@ -8,7 +8,7 @@ import sys
 project_path = sys.path[0] + '\\'
 
 # 配置文件名称
-properties_name = 'post_urls.properties'
+urls_file_name = 'post_urls.txt'
 
 # 帖子图片存储父路径
 post_images_pardir = 'pictures\\'

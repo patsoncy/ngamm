@@ -18,7 +18,7 @@ from utils import print_log
 
 def main():
     try:
-        urls = utils.get_urls_from_properties(setting.properties_name)
+        urls = utils.get_urls_from_txt_file(setting.urls_file_name)
         print urls
     except IOError:
         print '配置文件不存在或没有待请求的地址'
