@@ -5,4 +5,5 @@
 *.pyc
 image
 pictures
-post_urls.properties
+post_urls.txt
+test.py

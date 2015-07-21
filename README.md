@@ -14,3 +14,7 @@
 
 还有个叫`beautiful_soup` 的，类似于java的jsoup，解析dom树的
 
+## TODO:
+* 多个帖子用多进程，帖子中的多个url用多线程.multiprocess
+* 增加日志装饰器
+
