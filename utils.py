@@ -37,8 +37,14 @@ def make_real_img_link(img_link):
     if img_link.find('http') == -1:
         link_prefix = setting.img_link_prefix + '/'
         img_link = img_link[2:] if img_link.startswith('./') else img_link
-        return link_prefix + img_link if (img_link.find('.thumb') == -1) \
-            else link_prefix + img_link[:img_link.find('.thumb')]
+        if img_link.find('.thumb') != -1:
+            index = img_link.find('.thumb')
+        elif img_link.find('.medium') != -1:
+            index = img_link.find('.medium')
+        else
+            index = None
+        real_link = link_prefix + img_link[:index]
+        return real_link
     else:
         return img_link
 
