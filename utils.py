@@ -41,7 +41,7 @@ def make_real_img_link(img_link):
             index = img_link.find('.thumb')
         elif img_link.find('.medium') != -1:
             index = img_link.find('.medium')
-        else
+        else:
             index = None
         real_link = link_prefix + img_link[:index]
         return real_link
