@@ -56,3 +56,8 @@ def clean_filename(file_name):
 
 def print_log(words):
     print '-' * 20, words, '-' * 20
+
+
+def global_reg(pattern,content):
+    return re.find(pattern,content,re.S)
+
