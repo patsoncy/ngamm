@@ -1,9 +1,5 @@
 .idea
-*.rar
-*.zip
-*.8z
 *.pyc
-image
 pictures
 post_urls.txt
 test.py
