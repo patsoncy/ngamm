@@ -55,4 +55,4 @@ def clean_filename(file_name):
 
 
 def print_log(words):
-    print '-' * 10, words, '-' * 10
+    print '-' * 20, words, '-' * 20
