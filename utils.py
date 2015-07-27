@@ -59,5 +59,5 @@ def print_log(words):
 
 
 def global_reg(pattern,content):
-    return re.find(pattern,content,re.S)
+    return re.findAll(pattern,content,re.S)
 
