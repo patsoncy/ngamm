@@ -55,7 +55,7 @@ def clean_filename(file_name):
 
 
 def print_log(words):
-    print '-' * 20, words, '-' * 20
+    print '-' * 10, words, '-' * 10
 
 
 def global_reg(pattern,content):
