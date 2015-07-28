@@ -61,3 +61,9 @@ def print_log(words):
 def global_reg(pattern,content):
     return re.findAll(pattern,content,re.S)
 
+def global_check():
+    pass
+
+def local_check():
+    pass
+
