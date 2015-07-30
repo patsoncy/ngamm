@@ -14,12 +14,11 @@ import time
 from utils import print_log
 
 
-# TODO: 1、多进程 2、日志装饰器 
+# TODO: 1、多进程 2、日志装饰器
 
 def main():
     try:
         urls = utils.get_urls_from_txt_file(setting.urls_file_name)
-        print urls
     except IOError:
         print '配置文件不存在或没有待请求的地址'
     else:
@@ -33,28 +32,31 @@ def main():
 
 def let_us_go(url):
     try:
+        print '\n\n'
         # 获得帖子源码
         post_content = get_url_content(url)
         if not post_content:
             raise IOError('%s 内容获取失败，检查请求状态' % url)
         # 获得帖子标题
         post_image_dir_name = dry_nga_title(get_post_title(post_content))
-        print 'post title : %s' % post_image_dir_name
+        print '标题 : %s' % post_image_dir_name
         # 获得帖子页数
         post_pages = get_post_total_pages(post_content)
-        print 'post pages : %s' % post_pages
+        print '页数 : %s' % post_pages
         # 生成帖子图片文件夹
         img_path = make_post_image_dir(post_image_dir_name)
-        print 'post image dir : %s' % img_path
+        print '图片存放目录名 : %s' % img_path
+        # 存放已下载链接的txt文件名
+        record_file_name = img_path + post_image_dir_name + '.txt'
         # 获得帖子所有图片http路径
         img_links = fetch_post_image_links(url, post_pages)
         # 删除已经下载过的图片链接
         print_log('开始删除重复链接')
-        new_img_links = remove_repeat_img_links(img_path, post_image_dir_name, img_links)
+        new_img_links = remove_repeat_img_links(record_file_name, img_links)
         print_log('删除重复链接完毕')
-        print 'Total download link: %s' % len(new_img_links)
+        print '下载图片数: %s' % len(new_img_links)
         # 下载图片
-        download_images_from_link_list(new_img_links, img_path)
+        download_images_from_link_list(new_img_links, img_path, record_file_name)
     except IOError, e:
         print e
 
@@ -103,23 +105,21 @@ def fetch_post_image_links(url, post_pages):
     return sorted(utils.clean_str_list(img_links))
 
 
-def remove_repeat_img_links(img_path, post_image_dir_name, img_links):
-    record_file_path = img_path + post_image_dir_name + '.txt'
-    print 'Post download record file: %s' % record_file_path
-    if os.path.exists(record_file_path):
-        download_records_file = open(record_file_path, 'r+')
+def remove_repeat_img_links(record_file_name, img_links):
+    if os.path.exists(record_file_name):
+        download_records_file = open(record_file_name, 'r+')
         # 下载过的图片链接
         existed_links = utils.clean_str_list(download_records_file.readlines())
         # 新增链接（所有链接减去已下载链接）
         new_links = sorted(list(set(img_links) - set(existed_links)))
-        # 将新增连接追加写入至记录文件
-        download_records_file.writelines([link + '\n' for link in new_links])
+        # 将新增连接追加写入至记录文件 （废弃，改为下好一张存一张的地址）
+        # download_records_file.writelines([link + '\n' for link in new_links])
         download_records_file.close()
         return new_links
     else:
-        download_records_file = open(record_file_path, 'w')
-        download_records_file.writelines([link + '\n' for link in img_links])
-        download_records_file.close()
+        # download_records_file = open(record_file_path, 'w')
+        # download_records_file.writelines([link + '\n' for link in img_links])
+        # download_records_file.close()
         return img_links
 
 
@@ -139,15 +139,18 @@ def make_post_image_dir(post_image_dir_name):
     return real_dir + '\\'
 
 
-def download_images_from_link_list(img_links, img_path):
+def download_images_from_link_list(img_links, img_path, record_file_name):
     print_log('遍历下载图片中')
     start_time = time.time()
     total = len(img_links)
+    record_file = open(record_file_name,'a')
     for index, link in enumerate(img_links):
         print_log('第 %s / %s 张' % (str(index + 1), total))
         urllib.urlretrieve(link, filename=img_path + '\\' + utils.clean_filename(link[link.rfind('/') + 1:]),
                            reporthook=schedule)
+        record_file.write(link + '\n')
     end_time = time.time()
+    record_file.close()
     print_log('遍历下载图片共花费 : %s 秒 ' % str(round(end_time - start_time, 2)))
 
 
