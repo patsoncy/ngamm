@@ -94,7 +94,7 @@ def fetch_post_image_links(url, post_pages):
     link_reg2 = re.compile(setting.img_link_with_third_site_pattern)
     img_links = []
     for page in range(1, post_pages + 1):
-        print 'cur page:%s\r' % page,
+        print 'µ±Ç°Ò³Êı:%s\r' % page,
         curl_page_url = utils.make_url_with_page_num(url, page)
         whole_content = get_url_content(curl_page_url)
         if whole_content:
